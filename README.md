@@ -1,3 +1,8 @@
+https://pytorch.org/hub/facebookresearch_WSL-Images_resnext/
+https://github.com/facebookresearch/WSL-Images
+https://github.com/xuchaoxi/video-cnn-feat
+
+
 # Extracting CNN features from video frames by MXNet
 
 The `video-cnn-feat` toolbox provides python code and scripts for extracting CNN features from video frames by pre-trained [MXNet](http://mxnet.incubator.apache.org/) models. We have used this toolbox for our [winning solution](https://www-nlpir.nist.gov/projects/tvpubs/tv18.papers/rucmm.pdf) at TRECVID 2018 ad-hoc video search (AVS) task and in our [W2VV++](https://dl.acm.org/citation.cfm?doid=3343031.3350906) paper.
