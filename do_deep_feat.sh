@@ -27,8 +27,8 @@ CUDA_VISIBLE_DEVICES=$gpu_id python ${BASEDIR}/extract_deep_feat.py ${test_colle
 feat_dir=$rootpath/${test_collection}/FeatureData/$raw_feat_name
 feat_file=$feat_dir/id.feature.txt
 
-exit
+# exit
 if [ -f ${feat_file} ]; then
-    python ${BASEDIR}/txt2bin.py 0 $feat_file 0 $feat_dir --overwrite 1
-    rm $feat_file
+    python ${BASEDIR}/txt2bin.py 0 $feat_file 0 $feat_dir --overwrite $overwrite
+    # rm $feat_file
 fi

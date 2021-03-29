@@ -10,7 +10,7 @@ class BigFile:
         assert(len(self.names) == self.nr_of_images)
         self.name2index = dict(zip(self.names, range(self.nr_of_images)))
         self.binary_file = os.path.join(datadir, bin_file)
-        print ("[%s] %dx%d instances loaded from %s" % (self.__class__.__name__, self.nr_of_images, self.ndims, datadir))
+        print("[%s] %dx%d instances loaded from %s" % (self.__class__.__name__, self.nr_of_images, self.ndims, datadir))
 
 
     def readall(self, isname=True):
@@ -42,7 +42,6 @@ class BigFile:
  
         for next in sorted_index[1:]:
             move = (next-1-previous) * offset
-            #print next, move
             fr.seek(move, 1)
             res.fromfile(fr, self.ndims)
             previous = next
@@ -78,7 +77,6 @@ class BigFile:
  
         for next in sorted_index[1:]:
             move = (next-1-previous) * offset
-            #print next, move
             fr.seek(move, 1)
             res.fromfile(fr, self.ndims)
             previous = next
@@ -144,11 +142,11 @@ if __name__ == '__main__':
 
 
     for name,vec in zip(renamed, vectors):
-        print name, vec
+        print(name, vec)
         
     bigfile = StreamFile(feat_dir)
     bigfile.open()
     for name, vec in bigfile:
-        print name, vec
+        print( name, vec)
     bigfile.close()
 

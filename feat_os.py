@@ -57,11 +57,6 @@ def preprocess_images(inputs, width=IMG_SIZE, height=IMG_SIZE, crop_dims=CROP_SI
 
 def get_model(model_dir, model_name):
     model = torch.hub.load(model_dir, model_name, source='local')
-    # try:
-    #     model = torch.hub.load(model_dir, model_name, source='local')
-    #     print(model)
-    # except Exception as e:
-    #     logger.error("Fail to load the %s model from %s."%(model_name, model_dir))
     print(model)
     return model
 

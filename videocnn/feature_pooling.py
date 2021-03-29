@@ -72,7 +72,7 @@ def process(options, collection):
     videoset = []
 
     pbar = Progbar(len(video2frames))
-    for video_id, frame_id_list in video2frames.iteritems():
+    for video_id, frame_id_list in video2frames.items():
         renamed, vectors = feat_file.read(frame_id_list)
         name2vec = dict(zip(renamed, vectors))
         frame_id_list.sort(key=lambda v: int(v.rsplit('_',1)[-1]))
