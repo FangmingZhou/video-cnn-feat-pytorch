@@ -1,15 +1,20 @@
 # Using Pytorch to Extract 2D CNN Features of Video Frame
 
 
-# Supported Models
-
+# Supported Models and Options
+## Models:
 * [ResNeXt_WSL](https://github.com/facebookresearch/WSL-Images)
 
 * ……
 
+## Options:
+<!-- * oversample -->
+
 # to do list
- - [ ] oversample
- - [ ] universal
+ - oversample
+ - universal
+ - [Resnest](https://github.com/zhanghang1989/ResNeSt)
+
 
 # Environments
 * Ubuntu 16.04

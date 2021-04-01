@@ -25,17 +25,20 @@ def get_feat_name(model_name, layer, oversample):
     return '%s,%s,os' % (feat,layer) if oversample else '%s,%s' % (feat, layer)
 
 
-def extract_pytorch_feat(model, layer, image_id, image_path, oversample):
+# def extract_pytorch_feat(model, layer, image_id, image_path, oversample):
 
-    image_id_list, features = extract_feature(model, layer, 1, [image_id], [image_path], oversample=oversample)
-    # out_feature = features[0].view(-1).cpu().numpy()
+#     image_id_list, features = extract_feature(model, layer, 1, [image_id], [image_path], oversample=oversample)
+#     # out_feature = features[0].view(-1).cpu().numpy()
 
-    return image_id_list[0], features[0]
+#     return image_id_list[0], features[0]
 
 
 def get_model(model_dir, model_name):
-    model = torch.hub.load(model_dir, model_name, source='local')
-
+    origin_model = torch.hub.load(model_dir, model_name, source='local')
+    model = torch.nn.Sequential(*list(origin_model.children())[:-1])
+    model.eval()
+    if torch.cuda.is_available():
+        model.to(device)
     print(model)
     return model
 
@@ -48,7 +51,7 @@ def process(options, collection):
     model_name = options.model_name
 
     layer = 'avgpool'
-    batch_size = 1 # change the batch size will get slightly different feature vectors. So stick to batch size of 1.
+    # batch_size = 1 # change the batch size will get slightly different feature vectors. So stick to batch size of 1.
     feat_name = get_feat_name(model_name, layer, oversample)
 
     feat_dir = os.path.join(rootpath, collection, 'FeatureData', feat_name)
@@ -67,30 +70,11 @@ def process(options, collection):
                 logger.info('%s exists. overwrite', x)
 
     id_path_file = os.path.join(rootpath, collection, 'id.imagepath.txt')
-    # data = list(map(str.strip, open(id_path_file).readlines()))
-    # image_ids = [x.split()[0] for x in data]
-    # file_names = [x.split()[1] for x in data]
 
     model = get_model(model_dir, model_name)
-    if torch.cuda.is_available():
-        model.to(device)
-    
-    model.eval()
-    
-
-    features = []
-    def hook(module, input, output):
-        features.append(output.clone().detach())
-        # features = output
-    handle = model.avgpool.register_forward_hook(hook)
-
-    # output.view(-1).detach().cpu().numpy()
-
-    
-    # torch.nn.Module.register_forward_hook()
-    
-    dataset = ImageDataset(id_path_file)
-    dataloder = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=2, pin_memory=True)
+   
+    dataset = ImageDataset(id_path_file, oversample=oversample)
+    dataloder = DataLoader(dataset, batch_size=3, shuffle=False, num_workers=2, pin_memory=True)
     logger.info('%d images', len(dataset))
 
     fw = open(feat_file, 'w')
@@ -98,17 +82,29 @@ def process(options, collection):
     start_time = time.time()
     # import pdb; pdb.set_trace()
     for image_ids, image_tensor in dataloder:
+        
+
         batch_size = len(image_ids)
         if torch.cuda.is_available():
             image_tensor = image_tensor.to(device)
+        if oversample:
+            _, ncrops, c, h, w = image_tensor.size()
+            image_tensor = image_tensor.view(-1,c,h,w)
+
         with torch.no_grad():
-            model(image_tensor)
-        target_feature = features[0].view(batch_size, -1).data.cpu().numpy()
-        features = []
-        # feature = None
+            output = model(image_tensor)
+
+        if oversample:
+            output = output.view(batch_size, ncrops, -1).mean(1)
+        else:
+            output = output.view(batch_size, -1)
+        # import pdb; pdb.set_trace()
+
+        target_feature = output.cpu().numpy()
+        import pdb; pdb.set_trace()
         for i, image_id in enumerate(image_ids):
-            fw.write('%s %s\n' % (image_id, ' '.join(['%g'%x for x in target_feature[i]])))
-            pass
+            fw.write('%s %s\n' % (image_id, ' '.join( ['%g'%x for x in target_feature[i] ])))
+            
             
         progbar.add(batch_size)
     elapsed_time = time.time() - start_time
@@ -116,43 +112,11 @@ def process(options, collection):
     fw.close()
 
     
+        #  >>> input, target = batch # input is a 5d tensor, target is 2d
+        #  >>> bs, ncrops, c, h, w = input.size()
+        #  >>> result = model(input.view(-1, c, h, w)) # fuse batch size and ncrops
+        #  >>> result_avg = result.view(bs, ncrops, -1).mean(1) # avg over crops
 
-    # fails_id_path = []
-    
-
-    # im2path = list(zip(image_ids, file_names))
-    # success = 0
-    # fail = 0
-
-    # start_time = time.time()
-    # logger.info('%d images, %d done, %d to do', len(image_ids), 0, len(image_ids))
-    # progbar = Progbar(len(im2path))
-
-    # for i, (image_id, image_path) in enumerate(im2path):
-    #     try:
-    #         image_id, features = extract_pytorch_feat(model, layer, image_id, image_path, oversample)
-    #         # import pdb; pdb.set_trace()
-    #         fw.write('%s %s\n' % (image_id, ' '.join(['%g'%x for x in features])))
-    #         success += 1
-    #         # del features
-    #     except Exception as e:
-    #         fail += 1
-    #         logger.error('failed to process %s', image_path)
-    #         logger.info('%d success, %d fail', success, fail)
-    #         fails_id_path.append((image_id, image_path))
-    #     finally:
-    #         progbar.add(1)
-
-    # logger.info('%d success, %d fail', success, fail)
-    # elapsed_time = time.time() - start_time
-    # logger.info('total running time %s', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
- 
-
-    # if len(fails_id_path) > 0:
-    #     fail_fw = open(os.path.join(rootpath, collection, 'feature.fails.txt'), 'w')
-    #     for (imgid, impath) in fails_id_path:
-    #         fail_fw.write('%s %s\n' % (imgid, impath))
-    #     fail_fw.close()
 
 
 def main(argv=None):

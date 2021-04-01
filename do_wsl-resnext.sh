@@ -1,6 +1,6 @@
-rootpath=~/VisualSearch
-oversample=0
-overwrite=0
+rootpath=VisualSearch
+oversample=1
+overwrite=1
 
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 test_collection [rootpath]"
