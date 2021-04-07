@@ -26,16 +26,9 @@
 * numpy 1.20.2
 
 
-# Acknowledgements
-https://pytorch.org/hub/facebookresearch_WSL-Images_resnext/
-
-https://github.com/facebookresearch/WSL-Images
-
-https://github.com/xuchaoxi/video-cnn-feat
 
 
-<!-- 
-# Extracting CNN features from video frames by MXNet
+<!-- # Extracting CNN features from video frames by MXNet
 
 The `video-cnn-feat` toolbox provides python code and scripts for extracting CNN features from video frames by pre-trained [MXNet](http://mxnet.incubator.apache.org/) models. We have used this toolbox for our [winning solution](https://www-nlpir.nist.gov/projects/tvpubs/tv18.papers/rucmm.pdf) at TRECVID 2018 ad-hoc video search (AVS) task and in our [W2VV++](https://dl.acm.org/citation.cfm?doid=3343031.3350906) paper.
 
@@ -56,9 +49,9 @@ virtualenv --system-site-packages ~/cnn_feat
 source ~/cnn_feat/bin/activate
 pip install -r requirements.txt
 deactivate
-```
+``` -->
 
-### MXNet models
+<!-- ### MXNet models
 
 #### 1. ResNet-152 from the MXNet model zoo
 
@@ -72,7 +65,7 @@ deactivate
 
 #### 2. ResNeXt-101 from MediaMill, University of Amsterdam
 
-Send a request to `xirong ATrucDOTeduDOTcn` for the model link. Please read the [ImageNet Shuffle](https://dl.acm.org/citation.cfm?id=2912036) paper for technical details.
+Send a request to `xirong ATrucDOTeduDOTcn` for the model link. Please read the [ImageNet Shuffle](https://dl.acm.org/citation.cfm?id=2912036) paper for technical details. -->
 
 ## Get started
 
@@ -94,31 +87,32 @@ Feature extraction for a given video collection is performed in the following fo
 
 ```
 collection=toydata
-./do_extract_frames.sh $collection
+bash do_extract_frames.sh $collection
 ```
 
 ### Step 2. Extract frame-level CNN features
 
 ```
-./do_resnet152-11k.sh $collection
-./do_resnet152-1k.sh $collection
-./do_resnext101.sh $collection
+bash do_wsl-resnext.sh $collection
 ```
 
 ### Step 3. Obtain video-level CNN features (by mean pooling over frames)
 ```
-./do_feature_pooling.sh $collection pyresnet-152_imagenet11k,flatten0_output,os
-./do_feature_pooling.sh $collection pyresnet-152_imagenet1k,flatten0_output,os
-./do_feature_pooling.sh $collection pyresnext-101_rbps13k,flatten0_output,os
+feature_name=resnext101_32x48d_wsl,avgpool,os
+
+bash do_feature_pooling.sh $collection $feature_name
 ```
 
 ### Step 4. Feature concatenation
 ```
-featname=pyresnext-101_rbps13k,flatten0_output,os+pyresnet-152_imagenet11k,flatten0_output,os
-./do_concat_features.sh $collection $featname
+featname=$feature_name1+$feature_name2
+bash do_concat_features.sh $collection $featname
 ```
 
-# Acknowledgements
+
+
+
+<!-- # Acknowledgements
 
 This project was supported by the National Natural Science Foundation of China (No. 61672523).
 
@@ -134,3 +128,10 @@ year={2019}
 }
 ```
 # video-cnn-feat-pytorch -->
+
+# Acknowledgements
+https://pytorch.org/hub/facebookresearch_WSL-Images_resnext/
+
+https://github.com/facebookresearch/WSL-Images
+
+https://github.com/xuchaoxi/video-cnn-feat
