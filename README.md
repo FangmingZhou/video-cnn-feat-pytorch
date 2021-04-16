@@ -1,7 +1,7 @@
-# Using Pytorch to Extract 2D CNN Features of Video Frame
-This repository is modified from [video-cnn-feature](https://github.com/xuchaoxi/video-cnn-feat)
+# Using Pytorch to Extract 2D CNN Features of Video Frames
+This repository is modified from [video-cnn-feature](https://github.com/xuchaoxi/video-cnn-feat).
 
-## Update
+## Updates
 April 16: unified to RGB mode: convert to RGB mode if the imput image is gray mode.
 
 ## Supported Models and Options
@@ -86,7 +86,7 @@ Send a request to `xirong ATrucDOTeduDOTcn` for the model link. Please read the 
 Our code assumes the following data organization. We provide the `toydata` folder as an example.
 ```
 collection_name
-├─ VideoData
+├─VideoData
 ├─ImageData
 └─id.imagepath.txt
 ```
@@ -97,15 +97,15 @@ The `toydata` folder is assumed to be placed at `$HOME/VisualSearch/`. Video fil
 Feature extraction for a given video collection is performed in the following four steps. ***Skip the first step if frames are already there***. 
 
 ### Step 1. Extract frames from videos 
-
-
+Convert the videos (3d) to frames (2d), so that we can employ the 2D CNN models mentioned before.
+If you are dealing an image dataset, such as "mscoco", just skip the first step. (Make sure the images are placed in the "ImageData" sub-folder) (Default get one frame every half second)
 ```
 collection=toydata
 bash do_extract_frames.sh $collection
 ```
 
 ### Step 2. Extract frame-level CNN features
-
+Extract the CNN feature of each frame. Results will be placed in the "FeatureData" sub-folder.
 ```
 bash do_wsl-resnext.sh $collection
 ```
@@ -113,18 +113,17 @@ bash do_wsl-resnext.sh $collection
 ### Step 3. Obtain video-level CNN features (by mean pooling over frames)
 ```
 feature_name=resnext101_32x48d_wsl,avgpool,os
-
 bash do_feature_pooling.sh $collection $feature_name
 ```
 
 ### Step 4. Feature concatenation
+If you have more than one features of a collection, this script can combine them into one feature file.
 ```
 featname=$feature_name1+$feature_name2
 bash do_concat_features.sh $collection $featname
 ```
 
-
-# Acknowledgements
+## Acknowledgements
 Framework: https://github.com/xuchaoxi/video-cnn-feat
 
 WSL model tutorial: https://pytorch.org/hub/facebookresearch_WSL-Images_resnext
