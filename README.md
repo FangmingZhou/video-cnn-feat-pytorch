@@ -2,7 +2,7 @@
 This repository is modified from [video-cnn-feature](https://github.com/xuchaoxi/video-cnn-feat)
 
 ## Update
-## April 16: unified to RGB mode: convert to RGB mode if the imput image is gray mode.
+April 16: unified to RGB mode: convert to RGB mode if the imput image is gray mode.
 
 ## Supported Models and Options
 ### Supported Models:
