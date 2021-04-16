@@ -103,6 +103,7 @@ If you are dealing an image dataset, such as "mscoco", just skip the first step.
 collection=toydata
 bash do_extract_frames.sh $collection
 ```
+If you have trouble in etracting frames from *.gif files, use "convert" command in linux as substitute.
 
 ### Step 2. Extract frame-level CNN features
 Extract the CNN feature of each frame. Results will be placed in the "FeatureData" sub-folder.
