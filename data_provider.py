@@ -25,6 +25,7 @@ preprocess = Compose([
 
 
 class ImageDataset(data.Dataset):
+    
     def __init__(self, id_path_file, oversample=False):
         # id_path_file = os.path.join(rootpath, collection, 'id.imagepath.txt')
         data = list(map(str.strip, open(id_path_file).readlines()))
@@ -41,6 +42,8 @@ class ImageDataset(data.Dataset):
         image_id = self.image_ids[index]
         file_name = self.file_names[index]
         image = Image.open(file_name)
+        if image.mode != 'RGB':
+            image = image.convert('RBG')
         image = self.preprocess(image)
         return image_id, image
 
@@ -74,7 +77,9 @@ if __name__ == '__main__':
     image_id = image_ids[0]
     file_name = file_names[0]
     image = Image.open(file_name)
-    image.save('image_example/%s.jpg'%image_id)
+    import pdb;pdb.set_trace()
+
+    # image.save('image_example/%s.jpg'%image_id)
     # process = Compose([
     #     Resize(256),
     #     TenCrop(224)# this is a list of PIL Images

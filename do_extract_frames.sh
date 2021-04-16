@@ -1,6 +1,5 @@
-source common.ini
 overwrite=0
-
+rootpath=~/VisualSearch
 if [ "$#" -lt 1 ]; then
     echo "Usage: $0 collection [rootpath]"
     exit

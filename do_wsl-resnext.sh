@@ -1,4 +1,4 @@
-rootpath=VisualSearch
+rootpath=~/VisualSearch
 oversample=1
 overwrite=1
 

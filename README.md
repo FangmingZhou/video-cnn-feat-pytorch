@@ -1,22 +1,28 @@
 # Using Pytorch to Extract 2D CNN Features of Video Frame
+This repository is modified from [video-cnn-feature](https://github.com/xuchaoxi/video-cnn-feat)
 
+## Update
+## April 16: unified to RGB mode: convert to RGB mode if the imput image is gray mode.
 
-# Supported Models and Options
-## Models:
+## Supported Models and Options
+### Supported Models:
 * [ResNeXt_WSL](https://github.com/facebookresearch/WSL-Images)
 
 * ……
 
-## Options:
+### Features:
+ - oversample: tencrop the input image
+ - unified to RGB mode: convert to "RGB" mode if the mode of input image is other modes
+
 <!-- * oversample -->
 
-# to do list
- - oversample
- - universal
- - [Resnest](https://github.com/zhanghang1989/ResNeSt)
+### to do list
+ <!-- - oversample -->
+ - universal: add more supported models:
+ -  [Resnest](https://github.com/zhanghang1989/ResNeSt) (coming soon)
 
 
-# Environments
+## Environments
 * Ubuntu 16.04
 * CUDA 10.1
 * python 3.8
@@ -25,6 +31,15 @@
 * Pillow 8.1.2
 * numpy 1.20.2
 
+The repository has been tested in the above environment, you don't have to use the same environment, BUT "python=3.6 pytorch >=1.7" is recommended.
+
+This is an example to create a virtual environment using anaconda.
+```bash
+conda create -n cnn-feat-pytorch python=3.8
+conda activate cnn-feat-pytorch
+pip install -r requirements 
+conda deactivate
+```
 
 
 
@@ -72,9 +87,9 @@ Send a request to `xirong ATrucDOTeduDOTcn` for the model link. Please read the 
 Our code assumes the following data organization. We provide the `toydata` folder as an example.
 ```
 collection_name
-+ VideoData
-+ ImageData
-+ id.imagepath.txt
+├─ VideoData
+├─ImageData
+└─id.imagepath.txt
 ```
 The `toydata` folder is assumed to be placed at `$HOME/VisualSearch/`. Video files are stored in the `VideoData` folder. Frame files are in the `ImageData`folder. 
 + Video filenames shall end with `.mp4`, `.avi`, `.webm`, or `.gif`.
@@ -130,8 +145,10 @@ year={2019}
 # video-cnn-feat-pytorch -->
 
 # Acknowledgements
-https://pytorch.org/hub/facebookresearch_WSL-Images_resnext/
+Framework: https://github.com/xuchaoxi/video-cnn-feat
 
-https://github.com/facebookresearch/WSL-Images
+WSL model tutorial: https://pytorch.org/hub/facebookresearch_WSL-Images_resnext
 
-https://github.com/xuchaoxi/video-cnn-feat
+WSL pretrained model: https://github.com/facebookresearch/WSL-Images
+
+
