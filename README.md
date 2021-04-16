@@ -17,7 +17,6 @@ This repository is modified from [video-cnn-feature](https://github.com/xuchaoxi
 <!-- * oversample -->
 
 ### to do list
- <!-- - oversample -->
  - universal: add more supported models:
  -  [Resnest](https://github.com/zhanghang1989/ResNeSt) (coming soon)
 
@@ -124,25 +123,6 @@ featname=$feature_name1+$feature_name2
 bash do_concat_features.sh $collection $featname
 ```
 
-
-
-
-<!-- # Acknowledgements
-
-This project was supported by the National Natural Science Foundation of China (No. 61672523).
-
-## References
-If you find the package useful, please consider citing our MM'19 paper:
-```
-@inproceedings{li2019w2vv++,
-title={W2VV++: Fully Deep Learning for Ad-hoc Video Search},
-author={Li, Xirong and Xu, Chaoxi and Yang, Gang and Chen, Zhineng and Dong, Jianfeng},
-booktitle={Proceedings of the 27th ACM International Conference on Multimedia},
-pages={1786--1794},
-year={2019}
-}
-```
-# video-cnn-feat-pytorch -->
 
 # Acknowledgements
 Framework: https://github.com/xuchaoxi/video-cnn-feat

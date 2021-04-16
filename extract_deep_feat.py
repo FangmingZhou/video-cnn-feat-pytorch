@@ -20,17 +20,9 @@ logger.setLevel(logging.INFO)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def get_feat_name(model_name, layer, oversample):
+def get_feature_name(model_name, layer, oversample):
     feat = model_name
     return '%s,%s,os' % (feat,layer) if oversample else '%s,%s' % (feat, layer)
-
-
-# def extract_pytorch_feat(model, layer, image_id, image_path, oversample):
-
-#     image_id_list, features = extract_feature(model, layer, 1, [image_id], [image_path], oversample=oversample)
-#     # out_feature = features[0].view(-1).cpu().numpy()
-
-#     return image_id_list[0], features[0]
 
 
 def get_model(model_dir, model_name):
@@ -51,8 +43,8 @@ def process(options, collection):
     model_name = options.model_name
 
     layer = 'avgpool'
-    # batch_size = 1 # change the batch size will get slightly different feature vectors. So stick to batch size of 1.
-    feat_name = get_feat_name(model_name, layer, oversample)
+    batch_size = options.batch_size
+    feat_name = get_feature_name(model_name, layer, oversample)
 
     feat_dir = os.path.join(rootpath, collection, 'FeatureData', feat_name)
     id_file = os.path.join(feat_dir, 'id.txt')
@@ -74,19 +66,18 @@ def process(options, collection):
     model = get_model(model_dir, model_name)
    
     dataset = ImageDataset(id_path_file, oversample=oversample)
-    dataloder = DataLoader(dataset, batch_size=3, shuffle=False, num_workers=2, pin_memory=True)
+    dataloder = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=2, pin_memory=True)
     logger.info('%d images', len(dataset))
 
     fw = open(feat_file, 'w')
     progbar = Progbar(len(dataset))  
     start_time = time.time()
-    # import pdb; pdb.set_trace()
     for image_ids, image_tensor in dataloder:
         
-
         batch_size = len(image_ids)
         if torch.cuda.is_available():
             image_tensor = image_tensor.to(device)
+
         if oversample:
             _, ncrops, c, h, w = image_tensor.size()
             image_tensor = image_tensor.view(-1,c,h,w)
@@ -98,10 +89,8 @@ def process(options, collection):
             output = output.view(batch_size, ncrops, -1).mean(1)
         else:
             output = output.view(batch_size, -1)
-        # import pdb; pdb.set_trace()
 
         target_feature = output.cpu().numpy()
-        import pdb; pdb.set_trace()
         for i, image_id in enumerate(image_ids):
             fw.write('%s %s\n' % (image_id, ' '.join( ['%g'%x for x in target_feature[i] ])))
             
@@ -131,8 +120,8 @@ def main(argv=None):
     parser.add_option("--oversample", default=0, type="int", help="oversample (default: 0)")
     parser.add_option("--model_dir",default=DEFAULT_MODEL_DIR, type="string")
     parser.add_option("--model_name",default=DEFAULT_MODEL_NAME, type="string")
+    parser.add_option("--batch_size",default=1, type="int")
     
-  
     (options, args) = parser.parse_args(argv)
     if len(args) < 1:
         parser.print_help()
