@@ -2,22 +2,21 @@
 This repository is modified from [video-cnn-feature](https://github.com/xuchaoxi/video-cnn-feat).
 
 ## Updates
-April 16: unified to RGB mode: convert to RGB mode if the imput image is gray mode.
+April 16, 2021: unified to RGB mode: convert to RGB mode if the imput image is gray mode.
 
 ## Supported Models and Options
 ### Supported Models:
-* [ResNeXt_WSL](https://github.com/facebookresearch/WSL-Images)
+ - [ResNeXt_WSL](https://github.com/facebookresearch/WSL-Images)
 
-* ……
+<!-- * …… -->
 
 ### Features:
  - oversample: tencrop the input image
  - unified to RGB mode: convert to "RGB" mode if the mode of input image is other modes
 
-<!-- * oversample -->
 
-### to do list
- - universal: add more supported models:
+### To-do list
+ <!-- - universal: add more supported models: -->
  -  [Resnest](https://github.com/zhanghang1989/ResNeSt) (coming soon)
 
 
