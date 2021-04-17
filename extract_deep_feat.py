@@ -25,11 +25,11 @@ def get_feature_name(model_name, layer, oversample):
 
 
 def get_model(model_dir, model_name):
-    if os.path.exists(os.path.join(model_dir, model_name)):
+    if os.path.exists(model_dir):
         origin_model = torch.hub.load(model_dir, model_name, source='local')
     else:
         origin_model = torch.hub.load('facebookresearch/WSL-Images', model_name)
-        
+
     model = torch.nn.Sequential(*list(origin_model.children())[:-1])
     model.eval()
     if torch.cuda.is_available():
