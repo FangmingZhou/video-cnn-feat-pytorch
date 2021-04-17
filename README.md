@@ -2,6 +2,7 @@
 This repository is modified from [video-cnn-feature](https://github.com/xuchaoxi/video-cnn-feat).
 
 ## Updates
+April 17, 2021: load online model from gihub repo if the trained model is not prepared.
 April 16, 2021: unified to RGB mode: convert to RGB mode if the imput image is not.
 
 ## Supported Models and Options
