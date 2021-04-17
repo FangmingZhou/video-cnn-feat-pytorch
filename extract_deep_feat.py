@@ -8,7 +8,6 @@ from torch.utils.data import DataLoader
 
 from constant import *
 from utils.generic_utils import Progbar
-from feat_os import extract_feature
 from data_provider import ImageDataset
 
 
@@ -26,7 +25,11 @@ def get_feature_name(model_name, layer, oversample):
 
 
 def get_model(model_dir, model_name):
-    origin_model = torch.hub.load(model_dir, model_name, source='local')
+    if os.path.exists(os.path.join(model_dir, model_name)):
+        origin_model = torch.hub.load(model_dir, model_name, source='local')
+    else:
+        origin_model = torch.hub.load('facebookresearch/WSL-Images', model_name)
+        
     model = torch.nn.Sequential(*list(origin_model.children())[:-1])
     model.eval()
     if torch.cuda.is_available():
@@ -49,6 +52,13 @@ def process(options, collection):
     feat_dir = os.path.join(rootpath, collection, 'FeatureData', feat_name)
     id_file = os.path.join(feat_dir, 'id.txt')
     feat_file = os.path.join(feat_dir, 'id.feature.txt')
+    id_path_file = os.path.join(rootpath, collection, 'id.imagepath.txt')
+    
+    if options.split != "":
+        id_path_file = os.path.join(rootpath, collection, 'id.imagepath.txt.split', options.split)
+        feat_file += options.split
+        print('id_path_file:%s \nfeature_file:%s'%(id_path_file, feat_file))
+
     if not os.path.exists(feat_dir):
         os.makedirs(feat_dir)
 
@@ -61,8 +71,8 @@ def process(options, collection):
             else:
                 logger.info('%s exists. overwrite', x)
 
-    id_path_file = os.path.join(rootpath, collection, 'id.imagepath.txt')
-
+    
+    
     model = get_model(model_dir, model_name)
    
     dataset = ImageDataset(id_path_file, oversample=oversample)
@@ -121,7 +131,9 @@ def main(argv=None):
     parser.add_option("--model_dir",default=DEFAULT_MODEL_DIR, type="string")
     parser.add_option("--model_name",default=DEFAULT_MODEL_NAME, type="string")
     parser.add_option("--batch_size",default=1, type="int")
+    parser.add_option("--split",default='', type="string", help="deal one split part of entire collection")
     
+
     (options, args) = parser.parse_args(argv)
     if len(args) < 1:
         parser.print_help()
