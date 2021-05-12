@@ -69,6 +69,7 @@ def process(feat_dim, inputTextFiles, resultdir, overwrite):
     fw = open(res_id_file, 'w')
     fw.write(' '.join(imset))
     fw.close()
+    
     fw = open(os.path.join(resultdir,'shape.txt'), 'w')
     fw.write('%d %d' % (len(imset), feat_dim))
     fw.close() 

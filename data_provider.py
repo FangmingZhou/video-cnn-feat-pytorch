@@ -43,7 +43,7 @@ class ImageDataset(data.Dataset):
         file_name = self.file_names[index]
         image = Image.open(file_name)
         if image.mode != 'RGB':
-            image = image.convert('RBG')
+            image = image.convert('RGB')
         image = self.preprocess(image)
         return image_id, image
 
