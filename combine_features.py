@@ -10,7 +10,7 @@ from optparse import OptionParser
 
 from txt2bin import checkToSkip
 
-def process(feature_name:str, feature_dim:int, collections:list, root_path:str)->None:
+def process(feature_name:str, feature_dim:int, collections:list, root_path:str, overwrite:int)->None:
     # collection_list = collections
     # feature_name = 'f1'
     # root_path = './VisualSearch'
@@ -27,6 +27,9 @@ def process(feature_name:str, feature_dim:int, collections:list, root_path:str)-
     res_id_file = os.path.join(res_feature_dir, 'id.txt')
     res_bin_file = os.path.join(res_feature_dir, 'feature.bin')
     res_id_list = []
+
+    if checkToSkip(res_bin_file, overwrite):
+        return 0
 
     fw = open(res_bin_file, 'wb')
 
@@ -85,8 +88,12 @@ def main(argv=None):
     feature_dim = int(args[1])
     collections = args[2].split('-')
     root_path = args[3]
+
     
-    return process(feature_name, feature_dim, collections, root_path)
+    assert(len(collections) > 1), '%s dont have more then one collection' % collections
+    assert(type(feature_dim) == int and feature_dim > 0), 'Feature dimension should be a positive int number'
+    
+    return process(feature_name, feature_dim, collections, root_path, options.overwrite)
 
 
 if __name__ == "__main__":
