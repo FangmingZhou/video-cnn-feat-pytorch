@@ -18,7 +18,7 @@ def process(options, collection):
     overwrite = options.overwrite
 
     id_path_file = os.path.join(rootpath, collection, 'id.videopath.txt')
-    data = map(str.strip, open(id_path_file).readlines())
+    data = list(map(str.strip, open(id_path_file).readlines()))
     videoset = [x.split()[0] for x in data]
     filenames = [x.split()[1] for x in data]
 
@@ -41,7 +41,7 @@ def process(options, collection):
             os.makedirs(frame_output_dir)
 
         cap = cv2.VideoCapture(video_file)
-        if cv2.__version__.startswith('3'):
+        if not cv2.__version__.startswith('2'):
             length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
             width  = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
